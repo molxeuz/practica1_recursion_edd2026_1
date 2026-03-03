@@ -50,7 +50,7 @@ class ListaADN:
             else:
                 return self._contar_string(texto[1:], patron)
         
-        # 3. Promedio de riesgo (recursion cola)
+        # 3. Promedio de riesgo (recursion cola):
         
         def promedio(self):
             suma, cant = self._promedio(self.cabeza, 0, 0)
@@ -110,7 +110,7 @@ class ListaADN:
             lista.append(texto[i:j])
             self._fin(texto, i, j + 1, lista)
             
-        # 6 Mas A que T (Recursion cola)
+        # 6 Mas A que T (Recursion cola):
 
         def mas_A_que_T(self, texto):
             return self._contar_AT(texto, 0, 0)
@@ -141,6 +141,8 @@ class ListaADN:
                 letra = texto[0]
     
             return letra + self.mutar(texto[1:])
+
+# Pruebas:
 
 if __name__ == "__main__":
 
