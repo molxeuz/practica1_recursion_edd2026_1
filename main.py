@@ -1,177 +1,168 @@
-class Nodo:
+class Secuencia:
     def __init__(self, id, nombre, secuencia, riesgo):
         self.id = id
         self.nombre = nombre
         self.secuencia = secuencia
         self.riesgo = riesgo
-        self.sig = None   # apunta al siguiente nodo
-        
-class ListaADN:
-    def __init__(self):
-        self.cabeza = None
-        
-    # 1. Registrar nuevas secuencias:
-    
-    def registrar(self, id, nombre, secuencia, riesgo):
-        nuevo = Nodo(id, nombre, secuencia, riesgo)
 
-        if self.cabeza is None:        # si está vacía
-            self.cabeza = nuevo
-        else:
-            self._agregar(self.cabeza, nuevo)
+# 1
+def registrar(lista):
+    opcion = input("\n¿Registrar nueva secuencia? (SI/NO): ")
 
-    def _agregar(self, actual, nuevo):
-        if actual.sig is None:         # si es el último
-            actual.sig = nuevo
-        else:
-            self._agregar(actual.sig, nuevo)
-    
-    # 2. Contar ocurrencias patron:
-    
-    def contar_patron(self, patron):
-        self._contar_lista(self.cabeza, patron)
+    if opcion != "SI":
+        return
 
-    def _contar_lista(self, nodo, patron):
-        if nodo is None:
-            return
+    id = int(input("ID: "))
+    nombre = input("Nombre: ")
+    secuencia = input("Secuencia: ")
+    riesgo = int(input("Nivel de riesgo: "))
 
-        print(nodo.nombre, "->",
-              self._contar_string(nodo.secuencia, patron))
+    lista.append(Secuencia(id, nombre, secuencia, riesgo))
 
-        self._contar_lista(nodo.sig, patron)
+    return registrar(lista)  # recursión
 
-    def _contar_string(self, texto, patron):
-        if len(texto) < len(patron):   # caso base
+# 2
+def contar_string(texto, patron):
+    if len(texto) < len(patron):
+        return 0
+
+    if texto[:len(patron)] == patron:
+        return 1 + contar_string(texto[1:], patron)
+    else:
+        return contar_string(texto[1:], patron)
+
+# 3
+def promedio(lista, i=0, suma=0):
+    if i == len(lista):
+        if len(lista) == 0:
             return 0
+        return suma / len(lista)
 
-        if texto[:len(patron)] == patron:
-            return 1 + self._contar_string(texto[1:], patron)
-        else:
-            return self._contar_string(texto[1:], patron)
+    return promedio(lista, i + 1, suma + lista[i].riesgo)
 
-    # 3. Promedio de riesgo (recursion cola):
+# 4
+def secuencia_larga(lista, i = 0, mayor = None):
+
+    if len(lista) == 0:
+        return None
     
-    def promedio(self):
-        suma, cant = self._promedio(self.cabeza, 0, 0)
+    if i == len(lista):
+        return mayor
 
-        if cant == 0:
-            return 0
-        return suma / cant
+    if mayor is None or len(lista[i].secuencia) > len(mayor.secuencia):
+        mayor = lista[i]
 
-    def _promedio(self, nodo, suma, cant):
-        if nodo is None:
-            return suma, cant
+    return secuencia_larga(lista, i+1, mayor)
 
-        # llamada es lo último → cola
-        return self._promedio(
-            nodo.sig,
-            suma + nodo.riesgo,
-            cant + 1
-        )
+# 5
+def subcadenas_posibles(secuencia, i = 0, f = 0):
+
+    if i == len(secuencia):
+        return []
     
-    # 4. Secuencia mas larga:
+    if f == len(secuencia):
+        return subcadenas_posibles(secuencia, i + 1, i + 1)
     
-    def mas_larga(self):
-        return self._mas_larga(self.cabeza)
+    return [secuencia[i:f+1]] + subcadenas_posibles(secuencia, i, f + 1)
+    
+# 6
+def mas_nucleotidos(secuencia, i = 0):
+    if i == len(secuencia):
+        return 0
+    
+    if secuencia[i] == "A":
+        return 1 + mas_nucleotidos(secuencia, i + 1)
+    elif secuencia[i] == "T":
+        return -1 + mas_nucleotidos(secuencia, i + 1)
+    else:
+        return mas_nucleotidos(secuencia, i + 1)
 
-    def _mas_larga(self, nodo):
-        if nodo is None:
-            return None
+# 7
+def mutacion_genetica(secuencia, i = 0):
+    if i == len(secuencia):
+        return ""
+    
+    if secuencia[i] == "A":
+        nueva = "T"
+    elif secuencia[i] == "T":
+        nueva = "A"
+    else:
+        nueva = secuencia[i]
 
-        if nodo.sig is None:
-            return nodo
+    return nueva + mutacion_genetica(secuencia, i + 1)
 
-        resto = self._mas_larga(nodo.sig)
-
-        if len(nodo.secuencia) > len(resto.secuencia):
-            return nodo
-        else:
-            return resto
-
-    # 5 Subcadenas:
-
-    def subcadenas(self, texto):
-        resultado = []
-        self._inicio(texto, 0, resultado)
-        return resultado
-
-    def _inicio(self, texto, i, lista):
-        if i >= len(texto):
-            return
-
-        self._fin(texto, i, i + 1, lista)
-        self._inicio(texto, i + 1, lista)
-
-    def _fin(self, texto, i, j, lista):
-        if j > len(texto):
-            return
-
-        lista.append(texto[i:j])
-        self._fin(texto, i, j + 1, lista)
-        
-    # 6 Mas A que T (Recursion cola):
-
-    def mas_A_que_T(self, texto):
-        return self._contar_AT(texto, 0, 0)
-
-    def _contar_AT(self, texto, A, T):
-        if texto == "":
-            return A > T
-
-        if texto[0] == "A":
-            return self._contar_AT(texto[1:], A + 1, T)
-
-        if texto[0] == "T":
-            return self._contar_AT(texto[1:], A, T + 1)
-
-        return self._contar_AT(texto[1:], A, T) 
-
-    # 7 Mutacion genetica:
-
-    def mutar(self, texto):
-        if texto == "":
-            return ""
-
-        if texto[0] == "A":
-            letra = "T"
-        elif texto[0] == "T":
-            letra = "A"
-        else:
-            letra = texto[0]
-
-        return letra + self.mutar(texto[1:])
-
-# Pruebas:
+# ======================================
+# EJECUCIÓN
+# ======================================
 
 if __name__ == "__main__":
 
-    lista = ListaADN()
+    lista_secuencias = []
 
-    # 1
-    lista.registrar(1, "M1", "ATGATAT", 5)
-    lista.registrar(2, "M2", "TTGCA", 8)
-    lista.registrar(3, "M3", "ATAT", 3)
+    # Registrar secuencias
+    registrar(lista_secuencias)
 
-    # 2
-    print("\n2. Patrón AT:")
-    lista.contar_patron("AT")
+    print("\nRegistros guardados:")
+    for s in lista_secuencias:
+        print("ID:", s.id)
+        print("Nombre:", s.nombre)
+        print("Secuencia:", s.secuencia)
+        print("Riesgo:", s.riesgo)
+        print()
 
-    # 3
-    print("\n3. Promedio:")
-    print(lista.promedio())
+    # 2. Contar patrón
+    patron = "AG"
+    print("Conteo patrón en cada secuencia:")
+    for s in lista_secuencias:
+        conteo = contar_string(s.secuencia, patron)
+        print("Muestra", s.nombre, "->", conteo, "ocurrencias")
 
-    # 4
-    print("\n4. Más larga:")
-    print(lista.mas_larga().secuencia)
+    print()
 
-    # 5
-    print("\n5. Subcadenas ABC:")
-    print(lista.subcadenas("ABC"))
+    # 3. Promedio riesgo
+    print("Promedio de nivel de riesgo:")
+    prom = promedio(lista_secuencias)
+    print("Promedio:", prom)
 
-    # 6
-    print("\n6. Mas A que T:")
-    print(lista.mas_A_que_T("ATGATA"))
+    print()
 
-    # 7
-    print("\n7. Mutación:")
-    print(lista.mutar("ATCGTA"))
+    # 4. Secuencia más larga
+    print("Secuencia más larga:")
+    larga = secuencia_larga(lista_secuencias)
+
+    if larga is not None:
+        print("Nombre:", larga.nombre)
+        print("Secuencia:", larga.secuencia)
+    else:
+        print("No hay secuencias registradas")
+
+    print()
+
+    # 5. Subcadenas
+    print("Subcadenas posibles de cada secuencia:")
+    for s in lista_secuencias:
+        print("Muestra:", s.nombre)
+        resultado = subcadenas_posibles(s.secuencia)
+        print(resultado)
+
+    print()
+
+    # 6. Más A que T
+    print("¿Hay más A que T en cada secuencia?")
+    for s in lista_secuencias:
+        resultado = mas_nucleotidos(s.secuencia)
+        if resultado > 0:
+            print("La muestra", s.nombre, "tiene más A que T")
+        else:
+            print("La muestra", s.nombre, "NO tiene más A que T")
+
+    print()
+
+    # 7. Mutación genética
+    print("Simulación de mutación genética:")
+    for s in lista_secuencias:
+        nueva = mutacion_genetica(s.secuencia)
+        print("Muestra:", s.nombre)
+        print("Original:", s.secuencia)
+        print("Mutada:", nueva)
+        print()
