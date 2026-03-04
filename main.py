@@ -102,7 +102,7 @@ if __name__ == "__main__":
     # Registrar secuencias
     registrar(lista_secuencias)
 
-    print("\nRegistros guardados:")
+    print("\n1. Registros guardados:")
     for s in lista_secuencias:
         print("ID:", s.id)
         print("Nombre:", s.nombre)
@@ -112,7 +112,7 @@ if __name__ == "__main__":
 
     # 2. Contar patrón
     patron = "AG"
-    print("Conteo patrón en cada secuencia:")
+    print("2. Conteo patrón en cada secuencia:")
     for s in lista_secuencias:
         conteo = contar_string(s.secuencia, patron)
         print("Muestra", s.nombre, "->", conteo, "ocurrencias")
@@ -120,14 +120,14 @@ if __name__ == "__main__":
     print()
 
     # 3. Promedio riesgo
-    print("Promedio de nivel de riesgo:")
+    print("3. Promedio de nivel de riesgo:")
     prom = promedio(lista_secuencias)
     print("Promedio:", prom)
 
     print()
 
     # 4. Secuencia más larga
-    print("Secuencia más larga:")
+    print("4. Secuencia más larga:")
     larga = secuencia_larga(lista_secuencias)
 
     if larga is not None:
@@ -139,7 +139,7 @@ if __name__ == "__main__":
     print()
 
     # 5. Subcadenas
-    print("Subcadenas posibles de cada secuencia:")
+    print("5. Subcadenas posibles de cada secuencia:")
     for s in lista_secuencias:
         print("Muestra:", s.nombre)
         resultado = subcadenas_posibles(s.secuencia)
@@ -148,7 +148,7 @@ if __name__ == "__main__":
     print()
 
     # 6. Más A que T
-    print("¿Hay más A que T en cada secuencia?")
+    print("6. ¿Hay más A que T en cada secuencia?")
     for s in lista_secuencias:
         resultado = mas_nucleotidos(s.secuencia)
         if resultado > 0:
@@ -159,7 +159,7 @@ if __name__ == "__main__":
     print()
 
     # 7. Mutación genética
-    print("Simulación de mutación genética:")
+    print("7. Simulación de mutación genética:")
     for s in lista_secuencias:
         nueva = mutacion_genetica(s.secuencia)
         print("Muestra:", s.nombre)
