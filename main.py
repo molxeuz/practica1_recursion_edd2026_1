@@ -19,7 +19,7 @@ def registrar(lista):
 
     lista.append(Secuencia(id, nombre, secuencia, riesgo))
 
-    return registrar(lista)  # recursión
+    return registrar(lista)
 
 # 2
 def contar_string(texto, patron):
@@ -91,15 +91,13 @@ def mutacion_genetica(secuencia, i = 0):
 
     return nueva + mutacion_genetica(secuencia, i + 1)
 
-# ======================================
-# EJECUCIÓN
-# ======================================
+# Ejecucion:
 
 if __name__ == "__main__":
 
     lista_secuencias = []
 
-    # Registrar secuencias
+    # 1. Registrar secuencias
     registrar(lista_secuencias)
 
     print("\n1. Registros guardados:")
